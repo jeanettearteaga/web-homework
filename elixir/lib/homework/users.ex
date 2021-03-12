@@ -18,7 +18,10 @@ defmodule Homework.Users do
 
   """
   def list_users(_args) do
-    Repo.all(User)
+    User
+    |> join(:inner, [u], c in assoc(u, :company))
+    |> preload([_, c], company: c)
+    |> Repo.all()
   end
 
   @doc """

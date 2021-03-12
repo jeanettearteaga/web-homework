@@ -10,6 +10,7 @@ defmodule HomeworkWeb.Schemas.TransactionsSchema do
     field(:id, non_null(:id))
     field(:user_id, :id)
     field(:amount, :integer)
+    field(:company_id, non_null(:id))
     field(:credit, :boolean)
     field(:debit, :boolean)
     field(:description, :string)
@@ -29,6 +30,7 @@ defmodule HomeworkWeb.Schemas.TransactionsSchema do
   object :transaction_mutations do
     @desc "Create a new transaction"
     field :create_transaction, :transaction do
+      arg(:company_id, non_null(:id))
       arg(:user_id, non_null(:id))
       arg(:merchant_id, non_null(:id))
       @desc "amount is in cents"
@@ -42,6 +44,7 @@ defmodule HomeworkWeb.Schemas.TransactionsSchema do
 
     @desc "Update a new transaction"
     field :update_transaction, :transaction do
+      arg(:company_id, non_null(:id))
       arg(:id, non_null(:id))
       arg(:user_id, non_null(:id))
       arg(:merchant_id, non_null(:id))

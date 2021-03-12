@@ -7,6 +7,7 @@ defmodule HomeworkWeb.Schemas.UsersSchema do
   alias HomeworkWeb.Resolvers.UsersResolver
 
   object :user do
+    field(:company_id, non_null(:id))
     field(:id, non_null(:id))
     field(:dob, :string)
     field(:first_name, :string)
@@ -18,6 +19,7 @@ defmodule HomeworkWeb.Schemas.UsersSchema do
   object :user_mutations do
     @desc "Create a new user"
     field :create_user, :user do
+      arg(:company_id, non_null(:id))
       arg(:dob, non_null(:string))
       arg(:first_name, non_null(:string))
       arg(:last_name, non_null(:string))
@@ -27,6 +29,7 @@ defmodule HomeworkWeb.Schemas.UsersSchema do
 
     @desc "Update a new user"
     field :update_user, :user do
+      arg(:company_id, non_null(:id))
       arg(:id, non_null(:id))
       arg(:dob, non_null(:string))
       arg(:first_name, non_null(:string))
