@@ -170,5 +170,11 @@ defmodule Homework.TransactionsTest do
       transaction = transaction_fixture(valid_attrs)
       assert %Ecto.Changeset{} = Transactions.change_transaction(transaction)
     end
+
+    test "get_transactions_by_company_id/1 returns transactions by company_id", %{valid_attrs: valid_attrs} do
+      transaction1 = transaction_fixture(valid_attrs)
+      transaction_fixture(valid_attrs)
+      assert 2 == Transactions.get_transactions_by_company_id(transaction1.company_id) |> Enum.count()
+    end
   end
 end

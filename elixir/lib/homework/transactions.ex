@@ -38,6 +38,19 @@ defmodule Homework.Transactions do
   def get_transaction!(id), do: Repo.get!(Transaction, id)
 
   @doc """
+  Gets transaction by company_id
+
+  ## Examples
+
+      iex> get_transactions_by_company_id(123)
+      [%Transaction{}, ...]
+  """
+  def get_transactions_by_company_id(company_id) do
+    transactions_query = from(t in Transaction, where: t.company_id == ^company_id)
+    Repo.all(transactions_query)
+  end
+
+  @doc """
   Creates a transaction.
 
   ## Examples
