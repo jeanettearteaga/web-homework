@@ -2,6 +2,9 @@ defmodule HomeworkWeb.Schema.CompaniesTest do
   use HomeworkWeb.ConnCase, async: true
 
   alias Homework.Companies
+  alias Homework.Transactions
+  alias Homework.Users
+  alias Homework.Merchants
 
   describe "company" do
     test "returns a company", %{conn: conn} do
@@ -157,6 +160,78 @@ defmodule HomeworkWeb.Schema.CompaniesTest do
         |> Map.get("message")
 
       assert error_message == "Argument \"name\" has invalid value $name."
+    end
+
+    test "updated the avilable credit when credit_line is changed", %{conn: conn} do
+      {:ok, company} = Companies.create_company(%{name: "Dunder Mifflin", credit_line: 300})
+
+      {:ok, user} =
+        Users.create_user(%{
+          company_id: company.id,
+          dob: "some dob",
+          first_name: "Stacy",
+          last_name: "Perez"
+        })
+
+      {:ok, merchant} = Merchants.create_merchant(%{description: "Merch", name: "Swag"})
+
+      create_transaction_mutation = """
+          mutation transactionMutations($amount: Int!, $companyId: ID!, $merchantId: ID!, $userId: ID!, $credit: Boolean!, $debit: Boolean!, $description: String!){
+              createTransaction(amount: $amount, companyId: $companyId, merchantId: $merchantId, userId: $userId, credit: $credit, debit: $debit, description: $description
+              ){
+                amount
+                companyId
+                merchantId
+                userId
+                credit
+                debit
+                description
+              }
+          }
+      """
+
+      mutation = """
+          mutation CompanyMutations($id: ID!, $name: String!, $creditLine: Int!){
+              updateCompany(id: $id, name: $name, creditLine: $creditLine
+              ){
+                  id
+                  name
+                  creditLine
+                  availableCredit
+              }
+          }
+      """
+
+      variables = %{id: company.id, name: "Dunder", creditLine: 500}
+
+      transaction_variables = %{
+        amount: 100,
+        companyId: company.id,
+        merchantId: merchant.id,
+        userId: user.id,
+        credit: true,
+        debit: true,
+        description: "some description"
+      }
+
+      conn
+      |> post("/graphiql", %{query: create_transaction_mutation, variables: transaction_variables})
+      |> json_response(200)
+
+      body =
+        conn
+        |> post("/graphiql", %{query: mutation, variables: variables})
+        |> json_response(200)
+
+      expected_company = %{
+        "availableCredit" => 400,
+        "creditLine" => 500,
+        "id" => company.id,
+        "name" => "Dunder"
+      }
+
+      refute body["errors"]
+      assert body["data"]["updateCompany"] == expected_company
     end
   end
 

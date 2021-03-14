@@ -27,7 +27,9 @@ defmodule HomeworkWeb.Resolvers.CompaniesResolver do
   def update_company(_root, %{id: id} = args, _info) do
     company = Companies.get_company!(id)
 
-    case Companies.update_company(company, args) do
+    updated_args = update_company_available_credit_by_credit_line(args, company)
+
+    case Companies.update_company(company, updated_args) do
       {:ok, company} ->
         {:ok, company}
 
@@ -52,7 +54,7 @@ defmodule HomeworkWeb.Resolvers.CompaniesResolver do
   end
 
   @doc """
-  Updates a company's available credit for a transaction's company_id.
+  Updates a company's available credit by a changed amount for a transaction's company_id.
   """
   def update_company_available_credit(id, amount) when is_integer(amount) do
     with old_company when not is_nil(old_company) <- Companies.get_company(id),
@@ -69,7 +71,23 @@ defmodule HomeworkWeb.Resolvers.CompaniesResolver do
     end
   end
 
-  def update_company_available_credit(_, _) do
-    {:error, "amount must be an number"}
+  def update_company_available_credit(_, _), do: {:error, "amount must be an number"}
+
+  @doc """
+  Updates a company's available credit by a changed credit line for a company
+  """
+  def update_company_available_credit_by_credit_line(
+        %{credit_line: new_credit_line} = args,
+        company
+      )
+      when not is_nil(new_credit_line) do
+    available_credit = company.available_credit
+    credit_line = company.credit_line
+
+    spent = credit_line - available_credit
+    new_available_credit = new_credit_line - spent
+    Map.put(args, :available_credit, new_available_credit)
   end
+
+  def update_company_available_credit_by_credit_line(args, _), do: args
 end

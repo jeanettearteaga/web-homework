@@ -175,7 +175,7 @@ defmodule Homework.TransactionsTest do
       transaction1 = transaction_fixture(valid_attrs)
       transaction_fixture(valid_attrs)
 
-      assert Enum.count(Transactions.get_transactions_by_company_id(transaction1.company_id)) == 2         
+      assert Enum.count(Transactions.get_transactions_by_company_id(transaction1.company_id)) == 2
     end
   end
 end

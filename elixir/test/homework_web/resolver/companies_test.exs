@@ -38,4 +38,38 @@ defmodule HomeworkWeb.Resolver.CompaniesTest do
                )
     end
   end
+
+  describe "update_company_available_credit_by_credit_line" do
+    test "available_credit should be incremented" do
+      {:ok, company} = Companies.create_company(%{name: "Dunder Mifflin", credit_line: 30000})
+      expected_available_credit = 40000
+
+      assert expected_available_credit ==
+               CompaniesResolver.update_company_available_credit_by_credit_line(
+                 %{credit_line: 40000},
+                 company
+               ).available_credit
+    end
+
+    test "available_credit should be decremented" do
+      {:ok, company} = Companies.create_company(%{name: "Dunder Mifflin", credit_line: 30000})
+      expected_available_credit = 20000
+
+      assert expected_available_credit ==
+               CompaniesResolver.update_company_available_credit_by_credit_line(
+                 %{credit_line: 20000},
+                 company
+               ).available_credit
+    end
+
+    test "available_credit should be unchanged" do
+      {:ok, company} = Companies.create_company(%{name: "Dunder Mifflin", credit_line: 30000})
+
+      assert %{} ==
+               CompaniesResolver.update_company_available_credit_by_credit_line(
+                 %{},
+                 company
+               )
+    end
+  end
 end
