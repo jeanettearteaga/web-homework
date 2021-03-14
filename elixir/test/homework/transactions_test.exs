@@ -10,11 +10,9 @@ defmodule Homework.TransactionsTest do
     alias Homework.Transactions.Transaction
 
     setup do
-      {:ok, company1} =
-      Companies.create_company(%{name: "Dunder Mifflin", credit_line: 30000})
+      {:ok, company1} = Companies.create_company(%{name: "Dunder Mifflin", credit_line: 30000})
 
-      {:ok, company2} =
-      Companies.create_company(%{name: "Saber", credit_line: 1000})
+      {:ok, company2} = Companies.create_company(%{name: "Saber", credit_line: 1000})
 
       {:ok, merchant1} =
         Merchants.create_merchant(%{description: "some description", name: "some name"})
@@ -132,7 +130,7 @@ defmodule Homework.TransactionsTest do
       company2: company2,
       update_attrs: update_attrs,
       merchant2: merchant2,
-      user2: user2,
+      user2: user2
     } do
       transaction = transaction_fixture(valid_attrs)
 
@@ -171,10 +169,13 @@ defmodule Homework.TransactionsTest do
       assert %Ecto.Changeset{} = Transactions.change_transaction(transaction)
     end
 
-    test "get_transactions_by_company_id/1 returns transactions by company_id", %{valid_attrs: valid_attrs} do
+    test "get_transactions_by_company_id/1 returns transactions by company_id", %{
+      valid_attrs: valid_attrs
+    } do
       transaction1 = transaction_fixture(valid_attrs)
       transaction_fixture(valid_attrs)
-      assert 2 == Transactions.get_transactions_by_company_id(transaction1.company_id) |> Enum.count()
+
+      assert Enum.count(Transactions.get_transactions_by_company_id(transaction1.company_id)) == 2         
     end
   end
 end

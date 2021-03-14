@@ -1,8 +1,7 @@
 defmodule Homework.Companies do
-    @moduledoc """
-    The Companies context.
-    """
-
+  @moduledoc """
+  The Companies context.
+  """
 
   import Ecto.Query, warn: false
   alias Homework.Repo
@@ -39,6 +38,20 @@ defmodule Homework.Companies do
   def get_company!(id), do: Repo.get!(Company, id)
 
   @doc """
+  Gets a single company.
+
+  ## Examples
+
+      iex> get_company(123)
+      %Company{}
+
+      iex> get_company(456)
+      nil
+
+  """
+  def get_company(id), do: Repo.get(Company, id)
+
+  @doc """
   Creates a company.
 
   ## Examples
@@ -51,7 +64,7 @@ defmodule Homework.Companies do
 
   """
   def create_company(attrs \\ %{}) do
-    %Company{}
+    %Company{available_credit: attrs.credit_line}
     |> Company.changeset(attrs)
     |> Repo.insert()
   end
@@ -102,5 +115,4 @@ defmodule Homework.Companies do
   def change_company(%Company{} = company, attrs \\ %{}) do
     Company.changeset(company, attrs)
   end
-
 end
