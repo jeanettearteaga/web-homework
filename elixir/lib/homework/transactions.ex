@@ -7,6 +7,7 @@ defmodule Homework.Transactions do
   alias Homework.Repo
 
   alias Homework.Transactions.Transaction
+  alias Homework.Companies
 
   @doc """
   Returns the list of transactions.
@@ -63,9 +64,20 @@ defmodule Homework.Transactions do
 
   """
   def create_transaction(attrs \\ %{}) do
-    %Transaction{}
-    |> Transaction.changeset(attrs)
-    |> Repo.insert()
+    case %Transaction{}
+         |> Transaction.changeset(attrs)
+         |> Repo.insert() do
+      {:ok, transaction} ->
+        Companies.update_company_available_credit(
+          transaction.company_id,
+          transaction.amount * -1
+        )
+
+        {:ok, transaction}
+
+      error ->
+        error
+    end
   end
 
   @doc """
@@ -81,9 +93,22 @@ defmodule Homework.Transactions do
 
   """
   def update_transaction(%Transaction{} = transaction, attrs) do
-    transaction
-    |> Transaction.changeset(attrs)
-    |> Repo.update()
+    outdated_transaction_amount = transaction.amount
+
+    case transaction
+         |> Transaction.changeset(attrs)
+         |> Repo.update() do
+      {:ok, transaction} ->
+        Companies.update_company_available_credit(
+          transaction.company_id,
+          outdated_transaction_amount - transaction.amount
+        )
+
+        {:ok, transaction}
+
+      error ->
+        error
+    end
   end
 
   @doc """
@@ -99,7 +124,18 @@ defmodule Homework.Transactions do
 
   """
   def delete_transaction(%Transaction{} = transaction) do
-    Repo.delete(transaction)
+    case Repo.delete(transaction) do
+      {:ok, transaction} ->
+        Companies.update_company_available_credit(
+          transaction.company_id,
+          transaction.amount
+        )
+
+        {:ok, transaction}
+
+      error ->
+        error
+    end
   end
 
   @doc """

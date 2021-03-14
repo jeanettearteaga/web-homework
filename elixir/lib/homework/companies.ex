@@ -82,8 +82,10 @@ defmodule Homework.Companies do
 
   """
   def update_company(%Company{} = company, attrs) do
+    updated_attrs = update_company_available_credit_by_credit_line(attrs, company)
+
     company
-    |> Company.changeset(attrs)
+    |> Company.changeset(updated_attrs)
     |> Repo.update()
   end
 
@@ -115,4 +117,42 @@ defmodule Homework.Companies do
   def change_company(%Company{} = company, attrs \\ %{}) do
     Company.changeset(company, attrs)
   end
+
+  @doc """
+  Updates a company's available credit by a changed amount for a transaction's company_id.
+  """
+  def update_company_available_credit(id, amount) when is_integer(amount) do
+    with old_company when not is_nil(old_company) <- get_company(id),
+         available_credit <- old_company.available_credit + amount,
+         {:ok, company} <-
+           update_company(old_company, %{available_credit: available_credit}) do
+      {:ok, company}
+    else
+      error ->
+        {:error, "could not update the company's available_credit: #{inspect(error)}"}
+
+      nil ->
+        {:error, "Company with id #{id} does not exist"}
+    end
+  end
+
+  def update_company_available_credit(_, _), do: {:error, "amount must be an number"}
+
+  @doc """
+  Updates a company's available credit by a changed credit line for a company
+  """
+  def update_company_available_credit_by_credit_line(
+        %{credit_line: new_credit_line} = attrs,
+        company
+      )
+      when not is_nil(new_credit_line) do
+    available_credit = company.available_credit
+    credit_line = company.credit_line
+
+    spent = credit_line - available_credit
+    new_available_credit = new_credit_line - spent
+    Map.put(attrs, :available_credit, new_available_credit)
+  end
+
+  def update_company_available_credit_by_credit_line(attrs, _), do: attrs
 end

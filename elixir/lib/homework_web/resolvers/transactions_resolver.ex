@@ -31,11 +31,6 @@ defmodule HomeworkWeb.Resolvers.TransactionsResolver do
   def create_transaction(_root, args, _info) do
     case Transactions.create_transaction(args) do
       {:ok, transaction} ->
-        CompaniesResolver.update_company_available_credit(
-          transaction.company_id,
-          transaction.amount * -1
-        )
-
         {:ok, transaction}
 
       error ->
@@ -48,18 +43,12 @@ defmodule HomeworkWeb.Resolvers.TransactionsResolver do
   """
   def update_transaction(_root, %{id: id} = args, _info) do
     transaction = Transactions.get_transaction!(id)
-    outdated_transaction_amount = transaction.amount
 
     case Transactions.update_transaction(
            transaction,
            args
          ) do
       {:ok, transaction} ->
-        CompaniesResolver.update_company_available_credit(
-          transaction.company_id,
-          outdated_transaction_amount - transaction.amount
-        )
-
         {:ok, transaction}
 
       error ->
@@ -75,11 +64,6 @@ defmodule HomeworkWeb.Resolvers.TransactionsResolver do
 
     case Transactions.delete_transaction(transaction) do
       {:ok, transaction} ->
-        CompaniesResolver.update_company_available_credit(
-          transaction.company_id,
-          transaction.amount
-        )
-
         {:ok, transaction}
 
       error ->

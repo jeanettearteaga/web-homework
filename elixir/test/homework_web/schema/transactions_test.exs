@@ -362,6 +362,8 @@ defmodule HomeworkWeb.Schema.TransactionsTest do
           description: "tee"
         })
 
+        assert Companies.get_company(company.id).available_credit == 8958
+
       transaction_mutation = """
           mutation TransactionMutations($id: ID!, $amount: Int!, $companyId: ID!, $merchantId: ID!, $userId: ID!, $credit: Boolean!, $debit: Boolean!, $description: String!){
               updateTransaction(id: $id, amount: $amount, companyId: $companyId, merchantId: $merchantId, userId: $userId, credit: $credit, debit: $debit, description: $description
@@ -386,7 +388,7 @@ defmodule HomeworkWeb.Schema.TransactionsTest do
           }
       """
 
-      company_variables = %{name: "Dunder", creditLine: 9000, availableCredit: 9000}
+      company_variables = %{name: "Dunder", creditLine: 9000}
 
       transaction_variables = %{
         id: transaction.id,
@@ -409,7 +411,7 @@ defmodule HomeworkWeb.Schema.TransactionsTest do
         |> json_response(200)
 
       expected_company = %{
-        "availableCredit" => 8992
+        "availableCredit" =>  8950
       }
 
       refute body["errors"]
@@ -578,6 +580,8 @@ defmodule HomeworkWeb.Schema.TransactionsTest do
           description: "some description"
         })
 
+      assert Companies.get_company(company.id).available_credit == 8958
+
       delete_transaction_mutation = """
           mutation transactionMutations($id: ID!){
               deleteTransaction(id: $id
@@ -602,7 +606,7 @@ defmodule HomeworkWeb.Schema.TransactionsTest do
           }
       """
 
-      company_variables = %{name: "Dunder", creditLine: 9000, availableCredit: 9000}
+      company_variables = %{name: "Dunder", creditLine: 9000}
 
       transaction_variables = %{id: transaction.id}
 
@@ -616,7 +620,7 @@ defmodule HomeworkWeb.Schema.TransactionsTest do
         |> json_response(200)
 
       expected_company = %{
-        "availableCredit" => 9042
+        "availableCredit" => 9000
       }
 
       refute body["errors"]
