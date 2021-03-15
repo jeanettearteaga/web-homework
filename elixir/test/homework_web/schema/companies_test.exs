@@ -2,7 +2,6 @@ defmodule HomeworkWeb.Schema.CompaniesTest do
   use HomeworkWeb.ConnCase, async: true
 
   alias Homework.Companies
-  alias Homework.Transactions
   alias Homework.Users
   alias Homework.Merchants
 

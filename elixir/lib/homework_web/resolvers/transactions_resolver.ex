@@ -2,7 +2,6 @@ defmodule HomeworkWeb.Resolvers.TransactionsResolver do
   alias Homework.Merchants
   alias Homework.Transactions
   alias Homework.Users
-  alias HomeworkWeb.Resolvers.CompaniesResolver
 
   @doc """
   Get a list of transcations

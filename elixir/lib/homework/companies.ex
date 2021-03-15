@@ -63,8 +63,14 @@ defmodule Homework.Companies do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_company(attrs \\ %{}) do
-    %Company{available_credit: attrs.credit_line}
+  def create_company(%{credit_line: credit_line} = attrs) when not is_nil(credit_line) do
+    %Company{available_credit: credit_line}
+    |> Company.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_company(attrs) do
+    %Company{}
     |> Company.changeset(attrs)
     |> Repo.insert()
   end

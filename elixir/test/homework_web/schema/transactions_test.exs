@@ -362,7 +362,7 @@ defmodule HomeworkWeb.Schema.TransactionsTest do
           description: "tee"
         })
 
-        assert Companies.get_company(company.id).available_credit == 8958
+      assert Companies.get_company(company.id).available_credit == 8958
 
       transaction_mutation = """
           mutation TransactionMutations($id: ID!, $amount: Int!, $companyId: ID!, $merchantId: ID!, $userId: ID!, $credit: Boolean!, $debit: Boolean!, $description: String!){
@@ -411,7 +411,7 @@ defmodule HomeworkWeb.Schema.TransactionsTest do
         |> json_response(200)
 
       expected_company = %{
-        "availableCredit" =>  8950
+        "availableCredit" => 8950
       }
 
       refute body["errors"]
