@@ -22,15 +22,6 @@ const FiltersWrapper = styled.div`
   padding-right: 70px;
 `
 
-const GET_USERS_MUTATION = gql`
-  query GetUsers {
-    users {
-      id
-      firstName
-      lastName
-    }
-  }
-`
 const GET_MERCHANTS_MUTATION = gql`
   query GetMerchant {
     merchants {
@@ -45,6 +36,11 @@ const GET_TRANSACTIONS_BY_COMPANY = gql`
     companies {
       id
       name
+      users{
+        id
+        firstName
+        lastName
+      }
       transactions {
         id
         userId
@@ -113,7 +109,6 @@ export function Home () {
   const [companyId, setCompanyId] = useState('')
   const [numberFormat, setNumberFormat] = useState('decimal')
   const { loading, error, data: allTransactionData = {}, refetch: refetchTransactions } = useQuery(GetTransactions)
-  const { loading: userLoading, error: userError, data: userData = {} } = useQuery(GET_USERS_MUTATION)
   const { loading: merchantLoading, error: merchantError, data: merchantData = {} } = useQuery(GET_MERCHANTS_MUTATION)
 
   const {
@@ -128,11 +123,11 @@ export function Home () {
     refetchTransactions()
   }, [modalIsOpen])
 
-  if (companyLoading || loading || userLoading || merchantLoading) {
+  if (companyLoading || loading || merchantLoading) {
     return <Fragment>Loading...</Fragment>
   }
 
-  if (error || userError || merchantError || companyError) {
+  if (error || merchantError || companyError) {
     return <Fragment>¯\_(ツ)_/¯</Fragment>
   }
 
@@ -154,13 +149,19 @@ export function Home () {
     return selected ? selected.transactions : allTransactionData?.transactions
   }
 
+  function getCompanyData (companyId) {
+    return companyData.companies.find(company => {
+      return company.id === companyId
+    })
+  }
+
   return (
     <Fragment>
       <FiltersWrapper>
         <Filter>
           <label htmlFor='Company' style={labelStyles}>Company</label>
           <select id='companyId' onBlur={e => handleBlur(e, setCompanyId)} onChange={e => handleBlur(e, setCompanyId)} value={companyId}>
-            <option value=''>All</option>
+            <option defaultValue disabled hidden value=''>Select Company</option>
             {companyData.companies.map(company => {
               const { id, name } = company
               return <option key={id} value={id}>{name}</option>
@@ -176,17 +177,17 @@ export function Home () {
           </select>
         </Filter>
       </FiltersWrapper>
-      {
+      {companyId && (
         <TxPage
-          companyData={companyData.companies}
+          companyData={[getCompanyData(companyId)]}
           data={getTransactions(companyId)}
           getNumberFunction={getNumber}
           merchantData={merchantData.merchants}
           modalIsOpen={modalIsOpen}
           setModalIsOpen={setModalIsOpen}
-          userData={userData.users}
+          userData={getCompanyData(companyId).users}
         />
-      }
+      )}
     </Fragment>
   )
 }

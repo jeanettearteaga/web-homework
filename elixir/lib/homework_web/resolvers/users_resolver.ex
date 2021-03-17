@@ -9,6 +9,13 @@ defmodule HomeworkWeb.Resolvers.UsersResolver do
   end
 
   @doc """
+  Get a list of users by companyId
+  """
+  def users_by_company_id(%{id: company_id}, _args, _info) do
+    {:ok, Users.list_users_by_company_id(company_id)}
+  end
+
+  @doc """
   Creates a user
   """
   def create_user(_root, args, _info) do

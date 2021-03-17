@@ -23,7 +23,7 @@ const Table = styled.table`
     overflow-y: scroll;
     overflow-x: hidden;
      display: block;  
-     max-height: 500px;
+     max-height: 650px;
   }
 
  .header td{
@@ -34,7 +34,7 @@ const Table = styled.table`
   flex: display;
   align-self: stretch;
   border: 1px solid #ddd;
-  padding 25px;
+  padding: 25px 40px 25px 40px;
  }
 
  .transactions:nth-child(even) {

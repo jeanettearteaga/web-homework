@@ -25,6 +25,20 @@ defmodule Homework.Users do
   end
 
   @doc """
+  Returns the list of users by companyId.
+
+  ## Examples
+
+      iex> list_users("1234")
+      [%User{}, ...]
+
+  """
+  def list_users_by_company_id(company_id) do
+    user_query = from(t in User, where: t.company_id == ^company_id)
+    Repo.all(user_query)
+  end
+
+  @doc """
   Gets a single user.
 
   Raises `Ecto.NoResultsError` if the User does not exist.

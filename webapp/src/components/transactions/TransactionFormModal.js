@@ -179,7 +179,7 @@ export function TransactionFormModal ({
 }) {
   var subtitle
 
-  const [id, setId] = useState('')
+  const [transactionId, setTransactionId] = useState('')
   const [userId, setUserId] = useState('')
   const [description, setDescription] = useState('')
   const [merchantId, setMerchantId] = useState('')
@@ -190,7 +190,7 @@ export function TransactionFormModal ({
 
   useEffect(() => {
     if (transaction) {
-      setId(transaction.id)
+      setTransactionId(transaction.id)
       setUserId(transaction.userId)
       setDescription(transaction.description)
       setMerchantId(transaction.merchantId)
@@ -215,7 +215,7 @@ export function TransactionFormModal ({
 
   const [updateMutation] = useMutation(UPDATE_TRANSACTION_MUTATION, {
     variables: {
-      id,
+      id: transactionId,
       userId,
       description,
       merchantId,
@@ -228,15 +228,15 @@ export function TransactionFormModal ({
 
   const [deleteMutation] = useMutation(DELETE_TRANSACTION_MUTATION, {
     variables: {
-      id
+      id: transactionId
     }
   })
 
   const clearTransaction = () => {
-    setId('')
-    setUserId()
-    setDescription()
-    setMerchantId()
+    setTransactionId('')
+    setUserId('')
+    setDescription('')
+    setMerchantId('')
     setCompanyId()
     setAmount(0)
     setDebit(true)
@@ -301,7 +301,7 @@ export function TransactionFormModal ({
             })}
           </select>
           <Label>Merchant</Label>
-          <select id='merchantId' onBlur={(e) => handleBlur(e, setUserId)} onChange={(e) => handleBlur(e, setMerchantId)} value={merchantId}>
+          <select id='merchantId' onBlur={(e) => handleBlur(e, setMerchantId)} onChange={(e) => handleBlur(e, setMerchantId)} value={merchantId}>
             <option defaultValue disabled hidden value=''>
               Select Merchant
             </option>
@@ -312,7 +312,7 @@ export function TransactionFormModal ({
           </select>
 
           <Label>Company</Label>
-          <select id='companyId' onBlur={(e) => handleBlur(e, setUserId)} onChange={(e) => handleBlur(e, setCompanyId)} value={companyId} >
+          <select id='companyId' onBlur={(e) => handleBlur(e, setCompanyId)} onChange={(e) => handleBlur(e, setCompanyId)} value={companyId} >
             <option defaultValue disabled hidden value=''>
               Select Company
             </option>
