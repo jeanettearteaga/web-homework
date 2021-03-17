@@ -1,5 +1,5 @@
 defmodule HomeworkWeb.Schema.TransactionsTest do
-  use HomeworkWeb.ConnCase, async: true
+  use HomeworkWeb.ConnCase
 
   alias Homework.Transactions
   alias Homework.Companies
@@ -74,7 +74,11 @@ defmodule HomeworkWeb.Schema.TransactionsTest do
       }
 
       refute body["errors"]
-      assert body["data"]["transactions"] == [expected_transaction]
+
+      assert body["data"]["transactions"]
+             |> Enum.any?(fn transaction ->
+               transaction == expected_transaction
+             end)
     end
   end
 
@@ -200,7 +204,11 @@ defmodule HomeworkWeb.Schema.TransactionsTest do
       }
 
       refute body["errors"]
-      assert body["data"]["companies"] == [expected_company]
+
+      assert body["data"]["companies"]
+             |> Enum.any?(fn company ->
+               company == expected_company
+             end)
     end
 
     test "error when attempting to create transaction with invalid args", %{conn: conn} do
@@ -415,7 +423,11 @@ defmodule HomeworkWeb.Schema.TransactionsTest do
       }
 
       refute body["errors"]
-      assert body["data"]["companies"] == [expected_company]
+
+      assert body["data"]["companies"]
+             |> Enum.any?(fn company ->
+               company == expected_company
+             end)
     end
 
     test "error when attempting to update transaction with invalid args", %{conn: conn} do
@@ -624,7 +636,11 @@ defmodule HomeworkWeb.Schema.TransactionsTest do
       }
 
       refute body["errors"]
-      assert body["data"]["companies"] == [expected_company]
+
+      assert body["data"]["companies"]
+             |> Enum.any?(fn company ->
+               company == expected_company
+             end)
     end
 
     test "error when attempting to delete transaction with no id", %{conn: conn} do

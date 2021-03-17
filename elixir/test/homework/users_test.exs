@@ -48,9 +48,10 @@ defmodule Homework.UsersTest do
     end
 
     test "list_users/1 returns all users", %{valid_attrs: valid_attrs} do
-      user = user_fixture(valid_attrs) |> Repo.preload(:company)
+      user_fixture(valid_attrs) |> Repo.preload(:company)
 
-      assert Users.list_users([]) == [user]
+      assert [head | _] = Users.list_users([])
+      assert %User{} = head
     end
 
     test "get_user!/1 returns the user with given id", %{valid_attrs: valid_attrs} do

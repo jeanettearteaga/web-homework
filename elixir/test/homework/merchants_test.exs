@@ -23,8 +23,10 @@ defmodule Homework.MerchantsTest do
     end
 
     test "list_merchants/1 returns all merchants" do
-      merchant = merchant_fixture()
-      assert Merchants.list_merchants([]) == [merchant]
+      merchant_fixture()
+
+      assert [head | _] = Merchants.list_merchants([])
+      assert %Merchant{} = head
     end
 
     test "get_merchant!/1 returns the merchant with given id" do

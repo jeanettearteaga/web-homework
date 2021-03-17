@@ -2,9 +2,22 @@ query GetTransactions {
     transactions {
         id
         userId
+        user{
+            id
+            firstName
+            lastName
+        }
         companyId
+        company{
+            id
+            name
+        }
         description
         merchantId
+        merchant{
+            id
+            name
+        }
         debit
         credit
         amount

@@ -1,5 +1,5 @@
 defmodule HomeworkWeb.Schema.UsersTest do
-  use HomeworkWeb.ConnCase, async: true
+  use HomeworkWeb.ConnCase
 
   alias Homework.Users
   alias Homework.Companies
@@ -44,7 +44,11 @@ defmodule HomeworkWeb.Schema.UsersTest do
       }
 
       refute body["errors"]
-      assert body["data"]["users"] == [expected_user]
+
+      assert body["data"]["users"]
+             |> Enum.any?(fn user ->
+               user == expected_user
+             end)
     end
   end
 

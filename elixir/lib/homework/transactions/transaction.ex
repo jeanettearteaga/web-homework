@@ -7,13 +7,13 @@ defmodule Homework.Transactions.Transaction do
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "transactions" do
     field(:amount, :integer)
-    field(:company_id, :binary_id)
     field(:credit, :boolean, default: false)
     field(:debit, :boolean, default: false)
     field(:description, :string)
 
     belongs_to(:merchant, Merchant, type: :binary_id, foreign_key: :merchant_id)
     belongs_to(:user, User, type: :binary_id, foreign_key: :user_id)
+    belongs_to(:company, Company, type: :binary_id, foreign_key: :company_id)
 
     timestamps()
   end

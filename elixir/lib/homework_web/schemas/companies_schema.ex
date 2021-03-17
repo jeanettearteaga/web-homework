@@ -3,8 +3,10 @@ defmodule HomeworkWeb.Schemas.CompaniesSchema do
   Defines the graphql schema for companies.
   """
   use Absinthe.Schema.Notation
+  alias HomeworkWeb.Schemas.TransactionsSchema
 
   alias HomeworkWeb.Resolvers.CompaniesResolver
+  alias HomeworkWeb.Resolvers.TransactionsResolver
 
   object :company do
     field(:available_credit, :integer)
@@ -13,6 +15,10 @@ defmodule HomeworkWeb.Schemas.CompaniesSchema do
     field(:credit_line, :integer)
     field(:inserted_at, :naive_datetime)
     field(:updated_at, :naive_datetime)
+
+    field(:transactions, list_of(:transaction)) do
+      resolve(&TransactionsResolver.transactions_by_company_id/3)
+    end
   end
 
   object :company_mutations do

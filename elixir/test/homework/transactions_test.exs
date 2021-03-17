@@ -93,8 +93,9 @@ defmodule Homework.TransactionsTest do
     end
 
     test "list_transactions/1 returns all transactions", %{valid_attrs: valid_attrs} do
-      transaction = transaction_fixture(valid_attrs)
-      assert Transactions.list_transactions([]) == [transaction]
+      transaction_fixture(valid_attrs)
+      assert [head | _] = Transactions.list_transactions([])
+      assert %Transaction{} = head
     end
 
     test "get_transaction!/1 returns the transaction with given id", %{valid_attrs: valid_attrs} do
